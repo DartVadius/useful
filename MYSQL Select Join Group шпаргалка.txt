@@ -1,0 +1,443 @@
+﻿INSERT INTO <table> SET
+   column1 = value1,
+   column2 = value2,
+   .....
+   columnN = valueN
+
+UPDATE <table> SET
+   column1 = value1,
+   column2 = value2,
+   .....
+   columnN = valueN
+WHERE
+    <cond>
+LIMIT
+    1
+
+DELETE FROM <table> SET
+   column1 = value1,
+   column2 = value2,
+   .....
+   columnN = valueN
+WHERE
+    <cond>
+LIMIT
+    1
+
+Исходные таблицы
+post
++---------+------------+-----------+
+| post_id | post_title | post_text |
++---------+------------+-----------+
+|       1 | 1-st post  | test 1    |
+|       2 | 2-nd post  | test 2    |
+|       3 | 3-rd post  | test 3    |
+|       4 | 4-th post  | test 4    |
++---------+------------+-----------+
+comment
++------------+---------+-------------------+------------------+---------------------------+
+| comment_id | post_id | comment_parent_id | comment_username | comment_text              |
++------------+---------+-------------------+------------------+---------------------------+
+|          1 |       1 |                 0 | Vasisualiy       | Comment 1 lvl 0           |
+|          2 |       1 |                 0 | Pedro            | Comment 2 lvl 0 post 1    |
+|          3 |       1 |                 2 | Vasisualiy       | Comment 3 lvl 1 post 1    |
+|          4 |       1 |                 3 | Pedro            | Comment 4 lvl 2 post 1    |
+|          5 |       2 |                 0 | Bob              | Comment 5 lvl 0 post 2    |
+|          6 |       3 |                 0 | Dick             | Comment 6 lvl 0 post 3    |
+|          7 |       2 |                 5 | Dick             | Comment 7 lvl 1 post 2    |
+|          8 |       6 |                 0 | Dick             | Comment 8 lvl 0 post null |
++------------+---------+-------------------+------------------+---------------------------+
+
+INNER JOIN
+
+SELECT post_id, post_title, post_text, comment_id, comment_parent_id, comment_username FROM post INNER JOIN comment USING(post_id);
+
+Делаем выборку указанных столбцов из таблиц Post и Comment по общем идентификатору post_id 
+Cтатьи без комментариев и комментарии без валидного идентификатора статьи не попадут в выборку (см.комментарий с comment_id = 8). 
+USING можно использовать, поскольку у нас в двух таблицах есть колонки с одинаковым именем post_id.
+Примечание: хоть у нас и есть две колонки с одинаковым именем post_id, команда SELECT post_id срабатывает, хотя принадлежность к таблице не указана явно, и выводит записи из таблицы Post. 
+
+результат запроса
++---------+------------+-----------+------------+-------------------+------------------+
+| post_id | post_title | post_text | comment_id | comment_parent_id | comment_username |
++---------+------------+-----------+------------+-------------------+------------------+
+|       1 | 1-st post  | test 1    |          1 |                 0 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          2 |                 0 | Pedro            |
+|       1 | 1-st post  | test 1    |          3 |                 2 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          4 |                 3 | Pedro            |
+|       2 | 2-nd post  | test 2    |          5 |                 0 | Bob              |
+|       2 | 2-nd post  | test 2    |          7 |                 5 | Dick             |
+|       3 | 3-rd post  | test 3    |          6 |                 0 | Dick             |
++---------+------------+-----------+------------+-------------------+------------------+
+
+Если имя связующего поля в таблицах отличается, используется команда ON.
+
+SELECT post.post_id, post_title, post_text, comment_id, comment_parent_id, comment_username FROM post INNER JOIN comment ON comment.post_id = post.post_id;
+
+После ON указывается условие, по которому проводится выборка.
+Если в таблицах есть поля с одинаковыми именами, нужно явно указывать идентификатор таблицы (в нашем примере post.post_id, comment.post_id)
+
+То же самое без команды INNER JOIN
+
+SELECT post.post_id, post_title, post_text, comment_id, comment_parent_id, comment_username FROM post, comment WHERE comment.post_id = post.post_id;
+
+Имена таблиц записываются через запятую
+При таком синтаксисе не допускается использование комманд USING и ON, условия задаются через WHERE 
+Если в таблицах есть поля с одинаковыми именами, нужно указывать идентификатор таблицы (в нашем примере post.post_id, comment.post_id)
+
+LEFT JOIN
+
+SELECT post.post_id, post_title, post_text, comment_id, comment_parent_id, comment_username FROM post LEFT JOIN comment USING(post_id);
+
+Делаем выборку указанных столбцов из таблиц Post и Comment по общему идентификатору post_id
+В выборку попадут ВСЕ статьи. Если у статьи нет комментариев, вместо значений полей комментария будет выведен NULL
+Варианты синтаксиса с USING и ON см. в INNER JOIN
+
+результат выполнения запроса
++---------+------------+-----------+------------+-------------------+------------------+
+| post_id | post_title | post_text | comment_id | comment_parent_id | comment_username |
++---------+------------+-----------+------------+-------------------+------------------+
+|       1 | 1-st post  | test 1    |          1 |                 0 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          2 |                 0 | Pedro            |
+|       1 | 1-st post  | test 1    |          3 |                 2 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          4 |                 3 | Pedro            |
+|       2 | 2-nd post  | test 2    |          5 |                 0 | Bob              |
+|       2 | 2-nd post  | test 2    |          7 |                 5 | Dick             |
+|       3 | 3-rd post  | test 3    |          6 |                 0 | Dick             |
+|       4 | 4-th post  | test 4    |       NULL |              NULL | NULL             |
++---------+------------+-----------+------------+-------------------+------------------+
+
+RIGHT JOIN 
+
+SELECT post.post_id, post_title, post_text, comment_id, comment_parent_id, comment_username FROM post RIGHT JOIN comment USING(post_id);
+
+Те же яйца, только будут выведены все комментарии, а если у комментария нет валидного идентификатора статьи, вместо значений полей статьи будет выведен NULL и статьи без комментариев не будут выведены
+
+результат выполнения запроса
++---------+------------+-----------+------------+-------------------+------------------+
+| post_id | post_title | post_text | comment_id | comment_parent_id | comment_username |
++---------+------------+-----------+------------+-------------------+------------------+
+|       1 | 1-st post  | test 1    |          1 |                 0 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          2 |                 0 | Pedro            |
+|       1 | 1-st post  | test 1    |          3 |                 2 | Vasisualiy       |
+|       1 | 1-st post  | test 1    |          4 |                 3 | Pedro            |
+|       2 | 2-nd post  | test 2    |          5 |                 0 | Bob              |
+|       3 | 3-rd post  | test 3    |          6 |                 0 | Dick             |
+|       2 | 2-nd post  | test 2    |          7 |                 5 | Dick             |
+|    NULL | NULL       | NULL      |          8 |                 0 | Dick             |
++---------+------------+-----------+------------+-------------------+------------------+
+
+AS и древовидные структуры данных
+
+Исходные данные в таблице comment
++------------+---------+-------------------+------------------+---------------------------+
+| comment_id | post_id | comment_parent_id | comment_username | comment_text              |
++------------+---------+-------------------+------------------+---------------------------+
+|          1 |       1 |                 0 | Vasisualiy       | Comment 1 lvl 0           |
+|          2 |       1 |                 0 | Pedro            | Comment 2 lvl 0 post 1    |
+|          3 |       1 |                 2 | Vasisualiy       | Comment 3 lvl 1 post 1    |
+|          4 |       1 |                 3 | Pedro            | Comment 4 lvl 2 post 1    |
+|          5 |       2 |                 0 | Bob              | Comment 5 lvl 0 post 2    |
+|          6 |       3 |                 0 | Dick             | Comment 6 lvl 0 post 3    |
+|          7 |       2 |                 5 | Dick             | Comment 7 lvl 1 post 2    |
+|          8 |       6 |                 0 | Dick             | Comment 8 lvl 0 post null |
++------------+---------+-------------------+------------------+---------------------------+
+
+SELECT 	c1.comment_id, 
+	c1.comment_username, 
+	c2.comment_id, 
+	c2.comment_username, 
+	c2.comment_parent_id 
+FROM 
+	comment AS c1, comment AS c2 
+WHERE 
+	c2.comment_parent_id = c1.comment_id 
+ORDER BY 
+	c1.comment_id, c2.comment_id;
+
+Делаем объединение внутри таблицы, где значение поля родительского комментария comment_parent_id совпадает со значением поля comment_id. Т.е. выбираем комментарии, у которых есть потомки. 
+
+результат запроса 
++------------+------------------+------------+------------------+-------------------+
+| comment_id | comment_username | comment_id | comment_username | comment_parent_id |
++------------+------------------+------------+------------------+-------------------+
+|          2 | Pedro            |          3 | Vasisualiy       |                 2 |
+|          3 | Vasisualiy       |          4 | Pedro            |                 3 |
+|          5 | Bob              |          7 | Dick             |                 5 |
++------------+------------------+------------+------------------+-------------------+
+
+LEFT JOIN внутри таблицы
+
+SELECT 	c1.comment_id, 
+	c1.comment_username, 
+	c2.comment_id, 
+	c2.comment_username, 
+	c2.comment_parent_id 
+FROM 
+	comment AS c1 
+LEFT JOIN 
+	comment AS c2 
+ON 
+	c2.comment_parent_id = c1.comment_id;
+
+результат запроса
++------------+------------------+------------+------------------+-------------------+
+| comment_id | comment_username | comment_id | comment_username | comment_parent_id |
++------------+------------------+------------+------------------+-------------------+
+|          1 | Vasisualiy       |       NULL | NULL             |              NULL |
+|          2 | Pedro            |          3 | Vasisualiy       |                 2 |
+|          3 | Vasisualiy       |          4 | Pedro            |                 3 |
+|          4 | Pedro            |       NULL | NULL             |              NULL |
+|          5 | Bob              |          7 | Dick             |                 5 |
+|          6 | Dick             |       NULL | NULL             |              NULL |
+|          7 | Dick             |       NULL | NULL             |              NULL |
+|          8 | Dick             |       NULL | NULL             |              NULL |
++------------+------------------+------------+------------------+-------------------+
+Т.е. выбираем ВСЕ комментарии, если у них нет потомков выводится NULL.
+
+
+Объединение по двум таблицам с внутренним объединением во второй таблице (статьи с комментариями и с подкомментариями)
+
+SELECT 	post.post_id,
+	post.post_title,
+	c1.comment_id, 
+	c1.comment_username, 
+	c2.comment_id, 
+	c2.comment_username, 
+	c2.comment_parent_id 
+FROM 
+	post
+LEFT JOIN
+	comment AS c1
+ON
+	c1.post_id = post.post_id
+LEFT JOIN 
+	comment AS c2 
+ON 
+	c2.comment_parent_id = c1.comment_id;
+
+результат выполнения
++---------+------------+------------+------------------+------------+------------------+-------------------+
+| post_id | post_title | comment_id | comment_username | comment_id | comment_username | comment_parent_id |
++---------+------------+------------+------------------+------------+------------------+-------------------+
+|       1 | 1-st post  |          1 | Vasisualiy       |       NULL | NULL             |              NULL |
+|       1 | 1-st post  |          2 | Pedro            |          3 | Vasisualiy       |                 2 |
+|       1 | 1-st post  |          3 | Vasisualiy       |          4 | Pedro            |                 3 |
+|       1 | 1-st post  |          4 | Pedro            |       NULL | NULL             |              NULL |
+|       2 | 2-nd post  |          5 | Bob              |          7 | Dick             |                 5 |
+|       2 | 2-nd post  |          7 | Dick             |       NULL | NULL             |              NULL |
+|       3 | 3-rd post  |          6 | Dick             |       NULL | NULL             |              NULL |
+|       4 | 4-th post  |       NULL | NULL             |       NULL | NULL             |              NULL |
++---------+------------+------------+------------------+------------+------------------+-------------------+
+
+Группировки
+
+Выводим все посты и подсчитываем количество комментариев к ним
+
+SELECT 	post.post_id, 
+	post.post_title, 
+	count(comment_id) 
+AS 
+	'comments' 		//псевдоним для вывода заголовка таблицы
+FROM 
+	post 
+LEFT JOIN 
+	comment 
+ON 
+	post.post_id = comment.post_id 
+GROUP BY 
+	post.post_id;
+
+результат выполнения
++---------+------------+----------+
+| post_id | post_title | comments |
++---------+------------+----------+
+|       1 | 1-st post  |        4 |
+|       2 | 2-nd post  |        2 |
+|       3 | 3-rd post  |        1 |
+|       4 | 4-th post  |        0 |
++---------+------------+----------+
+
+
+Связи многие-ко-многим через смежные таблицы
+
+Вывести для каждого поста (таблица post) все тэги (таблица teg) через смежную таблицу post_to_tag
+
+SELECT 	post_id, post_title, tag_title FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN	tag USING(tag_id);
+
+результат выполнения
++---------+------------+-----------+
+| post_id | post_title | tag_title |
++---------+------------+-----------+
+|       1 | 1-st post  | peace     |
+|       1 | 1-st post  | door      |
+|       1 | 1-st post  | ball      |
+|       2 | 2-nd post  | peace     |
+|       2 | 2-nd post  | duke      |
+|       3 | 3-rd post  | duke      |
+|       3 | 3-rd post  | nukem     |
+|       4 | 4-th post  | ball      |
+|       4 | 4-th post  | duke      |
++---------+------------+-----------+
+
+Подсчитать количество тэгов у всех постов
+
+SELECT post_id, post_title, count(tag_title) AS tagCount FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN tag USING(tag_id) GROUP BY post_id;
+
+результат выполнения
++---------+------------+----------+
+| post_id | post_title | tagCount |
++---------+------------+----------+
+|       1 | 1-st post  |        3 |
+|       2 | 2-nd post  |        2 |
+|       3 | 3-rd post  |        2 |
+|       4 | 4-th post  |        2 |
++---------+------------+----------+
+
+Объединить и вывести все тэги для каждого поста в поле tagsList
+
+SELECT post_id, post_title, GROUP_CONCAT(tag_title) AS tagList FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN tag USING(tag_id) GROUP BY post_id;
+
+результат выполнения
++---------+------------+-----------------+
+| post_id | post_title | tagList         |
++---------+------------+-----------------+
+|       1 | 1-st post  | peace,ball,door |
+|       2 | 2-nd post  | duke,peace      |
+|       3 | 3-rd post  | nukem,duke      |
+|       4 | 4-th post  | duke,ball       |
++---------+------------+-----------------+
+
+Порядок конкатенации можно менять используя ORDER BY
+
+SELECT post_id, post_title, GROUP_CONCAT(tag_title ORDER BY tag_id) AS tagList FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN tag USING(tag_id) GROUP BY post_id;
+
+результат выполнения
++---------+------------+-----------------+
+| post_id | post_title | tagList         |
++---------+------------+-----------------+
+|       1 | 1-st post  | peace,door,ball |
+|       2 | 2-nd post  | peace,duke      |
+|       3 | 3-rd post  | duke,nukem      |
+|       4 | 4-th post  | ball,duke       |
++---------+------------+-----------------+
+
+
+Ищем посты по tag_title c сортировкой по дате создания поста от новых к старым
+
+SELECT post_id, post_title, post_create_datetime, tag_title FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN tag USING(tag_id) WHERE tag_title = 'duke' ORDER BY post_create_datetime DESC;
+
+Можно задать сразу несколько значений для поиска
+
+SELECT post_id, post_title, post_create_datetime, tag_title FROM post LEFT JOIN post_to_tag USING(post_id) LEFT JOIN tag USING(tag_id) WHERE tag_title = 'peace' OR tag_title = 'ball' ORDER BY post_create_datetime DESC;
+
+
+------------------
+д/з
+
+Выведите все посты, самый старый и самый свежий комментарий, используя агрегирующие функции MAX и MIN по полю comment_datetime
+Исходные таблицы
++---------+------------+-----------+
+| post_id | post_title | post_text |
++---------+------------+-----------+
+|       1 | 1-st post  | test 1    |
+|       2 | 2-nd post  | test 2    |
+|       3 | 3-rd post  | test 3    |
+|       4 | 4-th post  | test 4    |
++---------+------------+-----------+
++------------+---------+------------------+---------------------+
+| comment_id | post_id | comment_username | comment_datetime    |
++------------+---------+------------------+---------------------+
+|          1 |       1 | Vasisualiy       | 2016-10-28 10:46:16 |
+|          2 |       1 | Pedro            | 2016-10-28 10:50:36 |
+|          3 |       1 | Vasisualiy       | 2016-10-28 10:51:29 |
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |
+|          5 |       2 | Bob              | 2016-10-28 10:57:09 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |
++------------+---------+------------------+---------------------+
+
+Шаг 1. Делаем внутренний кроссджоин исходной таблицы комментариев и комментариев с максимальным временем записи сгруппированым по post_id
+
+SELECT c1.comment_id, c1.post_id, c1.comment_username, c1.comment_datetime, c2.post_id, c2.maxtime FROM comment AS c1 JOIN (SELECT post_id, max(comment_datetime) AS maxtime FROM comment GROUP BY post_id) AS c2;
+
+результат запроса 
++------------+---------+------------------+---------------------+---------+---------------------+
+| comment_id | post_id | comment_username | comment_datetime    | post_id | maxtime             |
++------------+---------+------------------+---------------------+---------+---------------------+
+|          1 |       1 | Vasisualiy       | 2016-10-28 10:46:16 |       1 | 2016-10-28 10:52:20 |
+|          1 |       1 | Vasisualiy       | 2016-10-28 10:46:16 |       2 | 2016-10-28 10:59:23 |
+|          1 |       1 | Vasisualiy       | 2016-10-28 10:46:16 |       3 | 2016-10-28 10:57:53 |
+|          1 |       1 | Vasisualiy       | 2016-10-28 10:46:16 |       6 | 2016-10-28 11:16:31 |
+|          2 |       1 | Pedro            | 2016-10-28 10:50:36 |       1 | 2016-10-28 10:52:20 |
+|          2 |       1 | Pedro            | 2016-10-28 10:50:36 |       2 | 2016-10-28 10:59:23 |
+|          2 |       1 | Pedro            | 2016-10-28 10:50:36 |       3 | 2016-10-28 10:57:53 |
+|          2 |       1 | Pedro            | 2016-10-28 10:50:36 |       6 | 2016-10-28 11:16:31 |
+|          3 |       1 | Vasisualiy       | 2016-10-28 10:51:29 |       1 | 2016-10-28 10:52:20 |
+|          3 |       1 | Vasisualiy       | 2016-10-28 10:51:29 |       2 | 2016-10-28 10:59:23 |
+|          3 |       1 | Vasisualiy       | 2016-10-28 10:51:29 |       3 | 2016-10-28 10:57:53 |
+|          3 |       1 | Vasisualiy       | 2016-10-28 10:51:29 |       6 | 2016-10-28 11:16:31 |
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |       1 | 2016-10-28 10:52:20 |
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |       2 | 2016-10-28 10:59:23 |
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |       3 | 2016-10-28 10:57:53 |
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |       6 | 2016-10-28 11:16:31 |
+|          5 |       2 | Bob              | 2016-10-28 10:57:09 |       1 | 2016-10-28 10:52:20 |
+|          5 |       2 | Bob              | 2016-10-28 10:57:09 |       2 | 2016-10-28 10:59:23 |
+|          5 |       2 | Bob              | 2016-10-28 10:57:09 |       3 | 2016-10-28 10:57:53 |
+|          5 |       2 | Bob              | 2016-10-28 10:57:09 |       6 | 2016-10-28 11:16:31 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |       1 | 2016-10-28 10:52:20 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |       2 | 2016-10-28 10:59:23 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |       3 | 2016-10-28 10:57:53 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |       6 | 2016-10-28 11:16:31 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |       1 | 2016-10-28 10:52:20 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |       2 | 2016-10-28 10:59:23 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |       3 | 2016-10-28 10:57:53 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |       6 | 2016-10-28 11:16:31 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |       1 | 2016-10-28 10:52:20 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |       2 | 2016-10-28 10:59:23 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |       3 | 2016-10-28 10:57:53 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |       6 | 2016-10-28 11:16:31 |
++------------+---------+------------------+---------------------+---------+---------------------+
+
+Шаг 2. Из предыдущего запроса выбираем записи у которых в правой и левой части совпадают post_id и comment_datetime
+
+SELECT c1.comment_id, c1.post_id, c1.comment_username, c1.comment_datetime, c2.post_id, c2.maxtime FROM comment AS c1 JOIN (SELECT post_id, max(comment_datetime) AS maxtime FROM comment GROUP BY post_id) AS c2 ON c1.post_id = c2.post_id AND c1.comment_datetime = c2.maxtime ORDER BY c1.post_id;
+
+результат запроса
++------------+---------+------------------+---------------------+---------+---------------------+
+| comment_id | post_id | comment_username | comment_datetime    | post_id | maxtime             |
++------------+---------+------------------+---------------------+---------+---------------------+
+|          4 |       1 | Pedro            | 2016-10-28 10:52:20 |       1 | 2016-10-28 10:52:20 |
+|          7 |       2 | Dick             | 2016-10-28 10:59:23 |       2 | 2016-10-28 10:59:23 |
+|          6 |       3 | Dick             | 2016-10-28 10:57:53 |       3 | 2016-10-28 10:57:53 |
+|          8 |       6 | Dick             | 2016-10-28 11:16:31 |       6 | 2016-10-28 11:16:31 |
++------------+---------+------------------+---------------------+---------+---------------------+
+
+Шаг 3. Получившуюся выборку присоединяем к таблице post по полю post_id
+
+SELECT post.post_id, post_title, c3.comment_username, c3.comment_datetime AS maxtime FROM post LEFT JOIN (SELECT c1.comment_id, c1.post_id, c1.comment_username, c1.comment_datetime FROM comment AS c1 JOIN (SELECT post_id, max(comment_datetime) AS maxtime FROM comment GROUP BY post_id) AS c2 ON c1.post_id = c2.post_id AND c1.comment_datetime = c2.maxtime ORDER BY post_id) AS c3 ON post.post_id = c3.post_id 
+
+результат запроса
++---------+------------+------------------+---------------------+
+| post_id | post_title | comment_username | maxtime             |
++---------+------------+------------------+---------------------+
+|       1 | 1-st post  | Pedro            | 2016-10-28 10:52:20 |
+|       2 | 2-nd post  | Dick             | 2016-10-28 10:59:23 |
+|       3 | 3-rd post  | Dick             | 2016-10-28 10:57:53 |
+|       4 | 4-th post  | NULL             | NULL                |
++---------+------------+------------------+---------------------+
+
+Шаг 4. По аналогии добавляем выборку комментариев с максимальным временем записи
+
+SELECT post.post_id, post_title, c3.comment_username, c3.comment_datetime AS maxtime, c6.comment_username, c6.comment_datetime AS mintime FROM post LEFT JOIN (SELECT c1.comment_id, c1.post_id, c1.comment_username, c1.comment_datetime FROM comment AS c1 JOIN (SELECT post_id, max(comment_datetime) AS maxtime FROM comment GROUP BY post_id) AS c2 ON c1.post_id = c2.post_id AND c1.comment_datetime = c2.maxtime ORDER BY post_id) AS c3 ON post.post_id = c3.post_id LEFT JOIN (SELECT c4.comment_id, c4.post_id, c4.comment_username, c4.comment_datetime FROM comment AS c4 JOIN (SELECT post_id, min(comment_datetime) AS mintime FROM comment GROUP BY post_id) AS c5 ON c4.post_id = c5.post_id AND c4.comment_datetime = c5.mintime ORDER BY c4.post_id) AS c6 ON post.post_id = c6.post_id;
+
+результат запроса
++---------+------------+------------------+---------------------+------------------+---------------------+
+| post_id | post_title | comment_username | maxtime             | comment_username | mintime             |
++---------+------------+------------------+---------------------+------------------+---------------------+
+|       1 | 1-st post  | Pedro            | 2016-10-28 10:52:20 | Vasisualiy       | 2016-10-28 10:46:16 |
+|       2 | 2-nd post  | Dick             | 2016-10-28 10:59:23 | Bob              | 2016-10-28 10:57:09 |
+|       3 | 3-rd post  | Dick             | 2016-10-28 10:57:53 | Dick             | 2016-10-28 10:57:53 |
+|       4 | 4-th post  | NULL             | NULL                | NULL             | NULL                |
++---------+------------+------------------+---------------------+------------------+---------------------+
