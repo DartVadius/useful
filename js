@@ -39,3 +39,12 @@
       });
 
   </script>
+  html
+  <?php if ($this->category) : ?>
+  <fieldset>
+  <p><legend class="header-bl"><?= $this->translate('Categories'); ?></legend></p>
+    php foreach ($this->category as $key => $value): ?>
+      <input class="brand" type="checkbox" id="<?= $key ?>" name="category[]" value="<?= $key ?>" /> <?= $value ?><br>
+    <?php endforeach; ?>
+  </fieldset>
+  <?php endif; ?>
