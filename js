@@ -40,6 +40,7 @@
 
   </script>
   html
+  <div class="filters ajax" id="category_filters">
   <?php if ($this->category) : ?>
   <fieldset>
   <p><legend class="header-bl"><?= $this->translate('Categories'); ?></legend></p>
@@ -48,3 +49,4 @@
     <?php endforeach; ?>
   </fieldset>
   <?php endif; ?>
+  </div>
