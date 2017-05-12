@@ -16,6 +16,7 @@
   </script>
   ```
   получаем значения отмеченных чекбоксов и отправляем аяксом
+```js
   <script>
       $(document).ready(function () {
           $('.brand').on('change', function () {
@@ -36,9 +37,10 @@
               });
           });
       });
-
   </script>
+  ```
   html
+  ```html
   <div class="filters ajax" id="category_filters">
   <?php if ($this->category) : ?>
   <fieldset>
@@ -49,14 +51,14 @@
   </fieldset>
   <?php endif; ?>
   </div>
-  
+  ```
   парсим url и получаем параметры
-
+```js
   $.urlParam = function(name){
     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
     return results[1] || 0;
   }
-
+```
   // example.com?param1=name&param2=&id=6
   $.urlParam('param1'); // name
   $.urlParam('id');        // 6
