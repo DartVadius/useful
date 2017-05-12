@@ -29,10 +29,7 @@
                   type: "GET",
                   data: data,
                   success: function (response) {
-                      $('#productcount').text(response.productcount);
-                      $('#product-list').html(response.products);
-                      $('.paginator').html(response.paginator);
-                      console.log(response);
+                      ...
                   }
               });
           });
@@ -50,3 +47,14 @@
   </fieldset>
   <?php endif; ?>
   </div>
+  
+  парсим url и получаем параметры
+  $.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results[1] || 0;
+  }
+
+  // example.com?param1=name&param2=&id=6
+  $.urlParam('param1'); // name
+  $.urlParam('id');        // 6
+  $.urlParam('param2');   // null
