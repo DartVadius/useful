@@ -14,7 +14,9 @@
           });
       });
   </script>
-  ```
+  ```  
+  ____________________________
+  
   получаем значения отмеченных чекбоксов и отправляем аяксом
 ```js
   <script>
@@ -46,12 +48,14 @@
   <fieldset>
   <p><legend class="header-bl"><?= $this->translate('Categories'); ?></legend></p>
     php foreach ($this->category as $key => $value): ?>
-      <input class="brand" type="checkbox" id="<?= $key ?>" name="category[]" value="<?= $key ?>" /> <?= $value ?><br>
+      <input class="brand" type="checkbox" id="<?=$key?>" name="category[]" value="<?= $key ?>" /><?=$value?><br>
     <?php endforeach; ?>
   </fieldset>
   <?php endif; ?>
   </div>
   ```
+  _____________________
+  
   парсим url и получаем параметры
 ```js
   $.urlParam = function(name){
@@ -60,6 +64,8 @@
   }
 ```
   // example.com?param1=name&param2=&id=6
+  ```js
   $.urlParam('param1'); // name
   $.urlParam('id');        // 6
   $.urlParam('param2');   // null
+  ```
