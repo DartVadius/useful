@@ -107,7 +107,7 @@
   ```
    Контроллер
    ```php
-   $form = new Application_Form_Post();
+   $form = new Application_Form_Blog();
    $this->view->form = $form;
    ```
    Вьюха
