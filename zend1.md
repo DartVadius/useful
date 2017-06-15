@@ -18,6 +18,6 @@
 
   Перенаправление 
   ```php
-  $this->_helper->redirector->goToRoute(['module' => 'unisender', 'controller' => 'index', 'action' => 'index'], 'default', true);
+  $this->_helper->redirector->goToRoute(['module' => 'module_name', 'controller' => 'controller_name', 'action' => 'action_name'], 'default', true);
   ```
   ____________________________
