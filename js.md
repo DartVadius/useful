@@ -56,16 +56,23 @@
   ```
   _____________________
   
-  парсим url и получаем параметры
-```js
+  ###парсим url и получаем параметры###
+  ```js
   $.urlParam = function(name){
     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
     return results[1] || 0;
   }
-```
+  ```
   // example.com?param1=name&param2=&id=6
   ```js
   $.urlParam('param1'); // name
   $.urlParam('id');        // 6
   $.urlParam('param2');   // null
   ```
+  _____________________
+  
+  ###распарсить html из переменной и получить значение###
+  ```js
+  $(msg).filter('#counter').html();
+  ```
+  msg - переменна, содержащая html
