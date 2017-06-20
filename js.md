@@ -76,3 +76,14 @@
   $(msg).filter('#counter').html();
   ```
   msg - переменная, содержащая html
+
+  _____________________
+
+  Enable/disable elem
+  ```js
+  / Disable #x
+  $( "#x" ).prop( "disabled", true );
+
+  // Enable #x
+  $( "#x" ).prop( "disabled", false );
+  ```
