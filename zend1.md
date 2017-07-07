@@ -129,3 +129,14 @@
   ```
   ____________________________
 
+  Добавление роутов
+  ____________________________
+  
+  ```php
+  $router = Zend_Controller_Front::getInstance()->getRouter();
+  $router->addRoute('new/route', new Zend_Controller_Router_Route_Static('new/route', [
+            'module' => 'myModule',
+            'controller' => 'my-controller',
+            'action' => 'my-action',
+        ]));
+  ```
