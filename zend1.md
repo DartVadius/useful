@@ -1,3 +1,10 @@
+  Проверка типа ajax запроса 
+  ```php
+  if ($this->getRequest()->isXmlHttpRequest()) {
+            
+  }
+  ```
+  
   Вывод изображения из переменной:
   ```php
   public function displayAction() {
