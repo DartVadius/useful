@@ -1,3 +1,26 @@
+  Вывод изображения из переменной:
+  ```php
+  public function displayAction() {
+        $get = $this->_request->getParams();
+        $file = APPLICATION_PATH . '/plugins/frontend/bannerShowcase/banners/' . $get['name'];
+        $this->_helper->layout->disableLayout();
+        $this->_helper->ViewRenderer->setNoRender();
+        $info = getimagesize($file);
+        $mimeType = $info['mime'];
+        $size = filesize($file);
+        $data = file_get_contents($file);
+        $response = $this->getResponse();
+        $response->setHeader('Content-Type', $mimeType, true);
+        $response->setHeader('Content-Length', $size, true);
+        $response->setHeader('Content-Transfer-Encoding', 'binary', true);
+        $response->setHeader('Cache-Control', 'max-age=3600, must-revalidate', true);
+        $response->setBody($data);
+        $response->sendResponse();
+        die;            
+    }
+  ```
+  
+  
   Получение полного пути в контроллере
   ```php
   $this->getRequest()->getScheme() . '://' . $this->getRequest()->getHttpHost() . $this->getRequest()->getRequestUri();
