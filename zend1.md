@@ -5,7 +5,7 @@
   }
   ```
   
-  Вывод изображения из переменной:
+  Вывод изображения скриптом:
   ```php
   public function displayAction() {
         $get = $this->_request->getParams();
