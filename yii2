@@ -6,11 +6,6 @@
 
     use yii\web\AssetBundle;
 
-    /**
-     * Description of myAsset
-     *
-     * @author DartVadius
-     */
     class myAsset extends AssetBundle {
         public $sourcePath = '@app/modules/my_module/other/path';
         public $css = [
@@ -25,7 +20,6 @@
     }
     ```
 Во вьюхе
-
-    ```php
+ ```php
     app\modules\my_module\myAsset::register($this);
-    ```
+ ```
