@@ -2,7 +2,7 @@
 
 В модуле создаем класс myAsset
 
-    ```php
+ ```php
     namespace app\modules\my_module;
 
     use yii\web\AssetBundle;
@@ -19,8 +19,10 @@
 
         ];
     }
-    ```
+ ```
+ 
 Во вьюхе
+
  ```php
     app\modules\my_module\myAsset::register($this);
  ```
