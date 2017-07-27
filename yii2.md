@@ -1,6 +1,7 @@
 Подключение скриптов из модуля
 
 В модуле создаем класс myAsset
+
     ```php
     namespace app\modules\my_module;
 
