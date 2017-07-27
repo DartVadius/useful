@@ -1,31 +1,31 @@
 Подключение скриптов из модуля
 
 В модуле создаем класс myAsset
-```php
-namespace app\modules\my_module;
+    ```php
+    namespace app\modules\my_module;
 
-use yii\web\AssetBundle;
+    use yii\web\AssetBundle;
 
-/**
- * Description of myAsset
- *
- * @author DartVadius
- */
-class myAsset extends AssetBundle {
-    public $sourcePath = '@app/modules/my_module/other/path';
-    public $css = [
-        
-    ];
-    public $js = [
-        'js/myJs.js'
-    ];
-    public  $depends = [
-        
-    ];
-}
-```
+    /**
+     * Description of myAsset
+     *
+     * @author DartVadius
+     */
+    class myAsset extends AssetBundle {
+        public $sourcePath = '@app/modules/my_module/other/path';
+        public $css = [
+
+        ];
+        public $js = [
+            'js/myJs.js'
+        ];
+        public  $depends = [
+
+        ];
+    }
+    ```
 Во вьюхе
 
-```php
-app\modules\my_module\myAsset::register($this);
-```
+    ```php
+    app\modules\my_module\myAsset::register($this);
+    ```
