@@ -69,6 +69,17 @@
   $.urlParam('id');        // 6
   $.urlParam('param2');   // null
   ```
+  вариант 2
+  ```js
+  var url = ($(this).attr('href'));
+  var cat = getURLParameter(url, 'cat');
+  var typ = getURLParameter(url, 'typ');
+  
+  function getURLParameter(url, name) {
+    return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+  }
+  ```
+  
   _____________________
   
   распарсить html из переменной и получить значение
