@@ -3,7 +3,7 @@
   ```php
   $html = new Zend_View();       
   $html->setScriptPath('/full/path/to/partial/folder');
-  $html->assign('foo', $buz);
+  $html->assign('foo', $buz); //set variables if its need
   $renderHtml = $html->render('partial.phtml');
   $this->_helper->json(['products' => $renderHtml]);
   ```
