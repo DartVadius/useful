@@ -1,3 +1,14 @@
+  Partial render with ajax
+  
+  ```php
+  $html = new Zend_View();       
+  $html->setScriptPath('/full/path/to/partial/folder');
+  $html->assign('foo', $buz);
+  $renderHtml = $html->render('partial.phtml');
+  $this->_helper->json(['products' => $renderHtml]);
+  ```
+  
+  
   Проверка типа ajax запроса 
   ```php
   if ($this->getRequest()->isXmlHttpRequest()) {
