@@ -157,19 +157,7 @@
    ```
    ____________________________
  
- Преобразование запроса из построителя запросов в sql код
-  ```php
-  $sql = $this->select()
-                ->setIntegrityCheck(false)
-                ->from(array('dc' => $this->_name))
-                ->join(array('c' => 'wa_contact'), 'dc.contact_id = c.id', array('name'))
-                ...
-                ->where("c.status NOT IN ('" . implode("','", $statuses) . "')");
-  
-  echo $sql->assemble();
-  ```
-  ____________________________
-
+ 
   Добавление роутов
   ____________________________
   
