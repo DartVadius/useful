@@ -20,3 +20,26 @@ if (preg_match("/^(\w+([\.\w+])*)@\w+(\.\w+)?\.\w{2,3}$/i", $test) || preg_match
     return False;
 }
 ```php
+___________________________
+
+Синглтон
+
+```php
+final class Singleton {
+   
+    public static function getInstance() {
+        static $inst = null;
+        if ($inst === null) {
+            $inst = new Singleton();
+        }
+        return $inst;
+    }
+    
+    private function __construct() {
+        
+    }
+    private function __clone() {
+        
+    }   
+}
+```php
