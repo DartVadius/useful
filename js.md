@@ -1,3 +1,15 @@
+ Получить значение по имени куки
+ 
+ ```js
+ function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+                ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    };
+    var value = getCookie('cookieName');
+ ```
+ 
  получаем значения из формы по клику и проверяем регуляркой, если проверка не проходит - прерываем выполнение скрипта  
   ```js
   <script>
