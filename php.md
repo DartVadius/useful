@@ -19,7 +19,7 @@ if (preg_match("/^(\w+([\.\w+])*)@\w+(\.\w+)?\.\w{2,3}$/i", $test) || preg_match
 } else {
     return False;
 }
-```php
+```
 
 _____________________________
 
@@ -44,4 +44,4 @@ final class Singleton {
         
     }   
 }
-```php
+```
