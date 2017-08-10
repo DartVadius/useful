@@ -1,3 +1,28 @@
+ Установить куку
+ 
+ ```js
+ function setCookie(name, value, path, domain, secure) {
+        var cookie_string = name + "=" + escape(value);
+        var date = new Date;
+        date.setDate(date.getDate() + 1); //устанавливаем дату +1 день
+        cookie_string += "; expires=" + date.toUTCString();
+
+        if (path) {
+            cookie_string += "; path=" + escape(path);
+        }
+
+        if (domain) {
+            cookie_string += "; domain=" + escape(domain);
+        }
+
+        if (secure) {
+            cookie_string += "; secure";
+        }
+
+        document.cookie = cookie_string;
+    }
+ ```
+ 
  Получить значение по имени куки
  
  ```js
