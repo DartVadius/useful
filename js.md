@@ -1,4 +1,4 @@
- Установить куку
+ Установить печеньку
  
  ```js
  function setCookie(name, value, path, domain, secure) {
@@ -23,7 +23,7 @@
     }
  ```
  
- Получить значение по имени куки
+ Получить значение по имени печеньки
  
  ```js
  function getCookie(name) {
